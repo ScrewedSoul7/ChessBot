@@ -43,6 +43,9 @@ class GameState():
         elif move.pieceMoved == 'bK':
             self.blackKingLoc = (move.endRow, move.endCol)
 
+        if move.isPawnPromotion:
+                self.board[move.endRow][move.endCol] = move.pieceMoved[0] + 'Q'
+
 
     #Undo the last move
     def undoMove(self):
@@ -221,7 +224,11 @@ class Move():
         self.endCol = endSq[1]          #Stores col of the second click as a number
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
+
         self.isPawnPromotion = False
+        if (self.pieceMoved == 'wP' and self.endRow == 0) or (self.pieceMoved == 'bP' and self.endRow == 7):
+            self.isPawnPromotion = True
+
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol  #get the coordinates for a piece
 
     # Overriding __equals__ method to establish equality between moves variable in ChessMain and moves in the valid moves list

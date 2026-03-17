@@ -52,15 +52,15 @@ def main():
                     print(move.getChessNotation())
                     for i in range(len(validMoves)):
                         if move == validMoves[i]:
-                            # if validMoves[i].isPawnPromotion:
-                            #     choice = ""
-                            #     while choice not in ['Q', 'R', 'B', 'N']:
-                            #         print("What do you want to promote to? Type Q for Queen, R for Rook, N for Knight, B for Bishop")
-                            #         choice = input().upper()
-                            #         if choice not in ['Q', 'R', 'B', 'N']:
-                            #             print("Please enter a valid promotion option!")
+                            if validMoves[i].isPawnPromotion:
+                                choice = ""
+                                while choice not in ['Q', 'R', 'B', 'N']:
+                                    print("What do you want to promote to? Type Q for Queen, R for Rook, N for Knight, B for Bishop")
+                                    choice = input().upper()
+                                    if choice not in ['Q', 'R', 'B', 'N']:
+                                        print("Please enter a valid promotion option!")
                                         
-                            #     validMoves[i].promotionChosen = choice
+                                validMoves[i].promotionChosen = choice
                             gameState.makeMove(validMoves[i])                         
                             moveMade = True
                             sqSelected = () #reset user clicks

@@ -28,8 +28,8 @@ class GameState():
         #Keeping track of King's location for detemining checks and castling 
         self.whiteKingLoc = (7, 4)
         self.blackKingLoc = (0, 4)
-        self.checkMate = False
-        self.staleMate = False
+        self.checkmate = False
+        self.stalemate = False
         self.enpassantPossible = ()  #Square where an enpassant capture is possible
         self.currentCastelingRights = CastleRights(True, True, True, True)
         self.castleRightsLog = [CastleRights(self.currentCastelingRights.wks, self.currentCastelingRights.wqs,
@@ -157,13 +157,13 @@ class GameState():
             self.undoMove()
             if len(moves) == 0:
                 if self.inCheck():
-                    self.checkMate = True
+                    self.checkmate = True
                     print("Checkmate")
                 else:
-                    self.staleMate = True
+                    self.stalemate = True
             else:
-                self.checkMate = False
-                self.staleMate = False
+                self.checkmate = False
+                self.stalemate = False
         self.enpassantPossible = tempEnpassantPossible
         self.currentCastelingRights = tempCastleRights
         return moves

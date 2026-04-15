@@ -1,5 +1,5 @@
 import pygame as p
-import ChessEngine
+import ChessEngine, MoveGenerator 
 
 WIDTH = HEIGHT = 512 #piece dimentions
 DIMENTION = 8 #chessboard has a dimention of 8 x 8
@@ -35,43 +35,47 @@ def main():
     sqSelected = ()  #no square selected initally
     clicks = [] #keep track of player clicks
     gameOver = False
+    playerOne = True #If a human is playing then true. If AI is playing then false.
+    playerTwo = False
     while running:
+        isHumanTurn = (gameState.whiteToMove and playerOne) or (not gameState.whiteToMove and playerTwo)
         for event in p.event.get():
             if event.type == p.QUIT:
                 running = False
             elif event.type == p.MOUSEBUTTONDOWN:
-                location = p.mouse.get_pos()  #location of mouse
-                col = location[0] // SQ_SIZE
-                row = location[1] // SQ_SIZE
-                if sqSelected == (row, col):
-                    sqSelected = ()
-                    clicks = []  #clear the player clicks
-                else:
-                    sqSelected = (row, col)
-                    clicks.append(sqSelected)  #append first and second clicks
-                if len(clicks) == 2:
-                    move = ChessEngine.Move(clicks[0], clicks[1], gameState.board)
-                    print(move.getChessNotation())
-                    for i in range(len(validMoves)):
-                        if move == validMoves[i]:
-                            if validMoves[i].isPawnPromotion:
-                                choice = ""
-                                while choice not in ['Q', 'R', 'B', 'N']:
-                                    print("What do you want to promote to? Type Q for Queen, R for Rook, N for Knight, B for Bishop")
-                                    choice = input().upper()
-                                    if choice not in ['Q', 'R', 'B', 'N']:
-                                        print("Please enter a valid promotion option!")
-                                        
-                                validMoves[i].promotionChosen = choice
-                            gameState.makeMove(validMoves[i])                         
-                            moveMade = True
-                            animte = True
-                            sqSelected = () #reset user clicks
-                            clicks = []
+                if not gameOver and isHumanTurn:
+                    location = p.mouse.get_pos()  #location of mouse
+                    col = location[0] // SQ_SIZE
+                    row = location[1] // SQ_SIZE
+                    if sqSelected == (row, col):
+                        sqSelected = ()
+                        clicks = []  #clear the player clicks
+                    else:
+                        sqSelected = (row, col)
+                        clicks.append(sqSelected)  #append first and second clicks 
+                    if len(clicks) == 2:
+                        move = ChessEngine.Move(clicks[0], clicks[1], gameState.board)
+                        print(move.getChessNotation())
+                        for i in range(len(validMoves)):
+                            if move == validMoves[i]:
+                                if validMoves[i].isPawnPromotion:
+                                    choice = ""
+                                    while choice not in ['Q', 'R', 'B', 'N']:
+                                        print("What do you want to promote to? Type Q for Queen, R for Rook, N for Knight, B for Bishop")
+                                        choice = input().upper()
+                                        if choice not in ['Q', 'R', 'B', 'N']:
+                                            print("Please enter a valid promotion option!")
+                                            
+                                    validMoves[i].promotionChosen = choice
+                                gameState.makeMove(validMoves[i])                         
+                                moveMade = True
+                                animte = True
+                                sqSelected = () #reset user clicks
+                                clicks = []
 
-                            break
-                    if not moveMade:
-                        clicks = [sqSelected]
+                                break
+                        if not moveMade:
+                            clicks = [sqSelected]
 
             elif event.type == p.KEYDOWN:
                 if event.key == p.K_z:
@@ -85,6 +89,13 @@ def main():
                     sqSelected = ()
                     moveMade = False
                     animte = False
+
+        #AI move logic
+        if not gameOver and not isHumanTurn:
+            AIMove = MoveGenerator.findRandomMove(validMoves)
+            gameState.makeMove(AIMove)
+            moveMade = True
+            animte = True
 
         #generate moves only when a valid move is made     
         if moveMade:

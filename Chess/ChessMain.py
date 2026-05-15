@@ -92,7 +92,7 @@ def main():
 
         #AI move logic
         if not gameOver and not isHumanTurn:
-            AIMove = MoveGenerator.findRandomMove(validMoves)
+            AIMove = MoveGenerator.findBestMove(gameState, validMoves)
             gameState.makeMove(AIMove)
             moveMade = True
             animte = True
